@@ -1,3 +1,4 @@
+// aramayus-backend/src/middlewares/isAdmin.js
 function isAdmin(req, res, next) {
   if (req.usuario?.rol !== 'admin') {
     return res.status(403).json({ error: 'Acceso solo para administradores' });

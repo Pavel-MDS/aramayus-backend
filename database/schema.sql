@@ -8,6 +8,7 @@ CREATE TABLE productos (
   precio        DECIMAL(10,2) NOT NULL CHECK (precio > 0),
   precio_oferta DECIMAL(10,2),
   categoria     VARCHAR(100),
+  tipo VARCHAR(50),
   destacado     BOOLEAN DEFAULT FALSE,
   activo        BOOLEAN DEFAULT TRUE,
   created_at    TIMESTAMP DEFAULT NOW(),

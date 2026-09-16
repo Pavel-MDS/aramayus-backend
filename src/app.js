@@ -1,3 +1,4 @@
+// aramayus-backend/src/app.js
 const express = require('express');
 const cors    = require('cors');
 require('dotenv').config();
@@ -18,7 +19,7 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api/usuarios', require('./routes/usuarios.routes'));
-
+app.use('/api/productos', require('./routes/productos.routes')); 
 app.use((req, res) => {
   res.status(404).json({ error: 'Ruta no encontrada' });
 });

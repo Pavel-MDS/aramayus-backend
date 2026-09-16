@@ -1,3 +1,4 @@
+// aramayus-backend/src/models/Usuario.js
 const pool = require('../config/db');
 
 const Usuario = {

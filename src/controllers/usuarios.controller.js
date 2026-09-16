@@ -1,3 +1,4 @@
+// aramayus-backend/src/controllers/usuarios.controller.js
 const bcrypt = require('bcryptjs');
 const jwt    = require('jsonwebtoken');
 const Usuario = require('../models/Usuario');

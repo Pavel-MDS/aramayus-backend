@@ -1,3 +1,4 @@
+// aramayus-backend/src/middlewares/auth.js
 const jwt = require('jsonwebtoken');
 
 function verificarToken(req, res, next) {
