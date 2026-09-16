@@ -78,6 +78,20 @@ CREATE TABLE pagos (
   estado             estado_pago DEFAULT 'pendiente',
   created_at         TIMESTAMP DEFAULT NOW()
 );
+-- =======================================
+-- CARRITO
+-- =======================================
+CREATE TABLE carrito_items (
+  id          SERIAL PRIMARY KEY,
+  usuario_id  UUID REFERENCES usuarios(id) ON DELETE CASCADE,
+  producto_id UUID REFERENCES productos(id) ON DELETE CASCADE,
+  talla       VARCHAR(5),
+  color       VARCHAR(50),
+  cantidad    INTEGER NOT NULL DEFAULT 1 CHECK (cantidad > 0),
+  created_at  TIMESTAMP DEFAULT NOW(),
+  UNIQUE(usuario_id, producto_id, talla, color)
+);
+
 
 -- ═══════════════════════════════════════
 -- ÍNDICES
@@ -86,3 +100,4 @@ CREATE INDEX idx_inventario_producto ON inventario(producto_id);
 CREATE INDEX idx_pedidos_usuario ON pedidos(usuario_id);
 CREATE INDEX idx_pedido_items_pedido ON pedido_items(pedido_id);
 CREATE INDEX idx_pagos_pedido ON pagos(pedido_id);
+CREATE INDEX idx_carrito_usuario ON carrito_items(usuario_id);

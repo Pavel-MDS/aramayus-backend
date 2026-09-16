@@ -46,6 +46,29 @@ const Pedido = {
     );
     return result.rows[0];
   },
+    async buscarPorId(id, usuario_id) {
+    const pedido = await pool.query(
+      'SELECT * FROM pedidos WHERE id = $1 AND usuario_id = $2',
+      [id, usuario_id]
+    );
+    if (pedido.rows.length === 0) return null;
+
+    const items = await pool.query(
+      'SELECT * FROM pedido_items WHERE pedido_id = $1',
+      [id]
+    );
+    return { ...pedido.rows[0], items: items.rows };
+  },
+
+  async listarTodos() {
+    const result = await pool.query(
+      `SELECT p.*, u.nombre as usuario_nombre, u.email as usuario_email
+       FROM pedidos p
+       JOIN usuarios u ON u.id = p.usuario_id
+       ORDER BY p.created_at DESC`
+    );
+    return result.rows;
+  },
 };
 
 module.exports = Pedido;

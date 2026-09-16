@@ -20,6 +20,8 @@ app.get('/health', (req, res) => {
 
 app.use('/api/usuarios', require('./routes/usuarios.routes'));
 app.use('/api/productos', require('./routes/productos.routes')); 
+app.use('/api/carrito', require('./routes/carrito.routes'));  
+app.use('/api/pedidos', require('./routes/pedidos.routes')); 
 app.use((req, res) => {
   res.status(404).json({ error: 'Ruta no encontrada' });
 });
