@@ -92,4 +92,35 @@ const webhookStripe = async (req, res) => {
   res.json({ received: true });
 };
 
-module.exports = { crearSesionPago, webhookStripe };
+// POST /api/pagos/:pedido_id/reembolso (admin)
+const reembolsarPago = async (req, res) => {
+  const { pedido_id } = req.params;
+
+  try {
+    const pagoResult = await pool.query(
+      "SELECT referencia_externa FROM pagos WHERE pedido_id = $1 AND estado = 'completado' ORDER BY created_at DESC LIMIT 1",
+      [pedido_id]
+    );
+
+    if (pagoResult.rows.length === 0) {
+      return res.status(404).json({ error: 'No se encontró un pago completado para este pedido' });
+    }
+
+    const sessionId = pagoResult.rows[0].referencia_externa;
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    const refund = await stripe.refunds.create({
+      payment_intent: session.payment_intent,
+    });
+
+    await pool.query("UPDATE pagos SET estado = 'reembolsado' WHERE referencia_externa = $1", [sessionId]);
+    await pool.query("UPDATE pedidos SET estado = 'cancelado', updated_at = NOW() WHERE id = $1", [pedido_id]);
+
+    res.json({ message: 'Reembolso procesado correctamente', refund_id: refund.id });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error al procesar el reembolso' });
+  }
+};
+
+module.exports = { crearSesionPago, webhookStripe, reembolsarPago };
