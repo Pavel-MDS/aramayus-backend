@@ -41,12 +41,13 @@ const Producto = {
     params.push(pageSize, offset);
 
     const result = await pool.query(
-      `SELECT DISTINCT p.*, pi.url as imagen_principal
-       FROM productos p
-       LEFT JOIN producto_imagenes pi ON pi.producto_id = p.id AND pi.es_principal = true
-       ${where}
-       ORDER BY ${orderBy}
-       LIMIT $${params.length - 1} OFFSET $${params.length}`,
+      `SELECT DISTINCT p.*, pi.url as imagen_principal,
+              COALESCE((SELECT SUM(i.stock) FROM inventario i WHERE i.producto_id = p.id), 0) as stock_total
+      FROM productos p
+      LEFT JOIN producto_imagenes pi ON pi.producto_id = p.id AND pi.es_principal = true
+      ${where}
+      ORDER BY ${orderBy}
+      LIMIT $${params.length - 1} OFFSET $${params.length}`,
       params
     );
 
