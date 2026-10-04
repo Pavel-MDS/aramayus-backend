@@ -15,6 +15,8 @@ pool.connect()
     console.log('✅ Conectado a PostgreSQL local');
     client.release();
   })
-  .catch(err => console.error('❌ Error de conexión:', err.message));
-
+  .catch(err => {
+      console.error('❌ Error de conexión:', err.message);
+      console.error('Detalle completo:', err);
+    });
 module.exports = pool;
